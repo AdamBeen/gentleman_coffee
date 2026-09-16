@@ -48,9 +48,11 @@ export function useContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const json = (await res.json()) as ApiResponse;
+      // La réponse peut ne pas être du JSON (proxy, erreur infra) :
+      // on dégrade proprement vers un message compréhensible.
+      const json = await res.json().catch(() => null as ApiResponse | null);
 
-      if (res.ok && json.status === "success") {
+      if (res.ok && json?.status === "success") {
         setStatus("success");
         setServerMessage(json.message ?? "");
         form.reset();
@@ -59,9 +61,9 @@ export function useContactForm() {
         return;
       }
 
-      if (json.errors) setErrors(json.errors);
+      if (json?.errors) setErrors(json.errors);
       setServerMessage(
-        json.message ??
+        json?.message ??
           "Une erreur est survenue. Merci de réessayer dans quelques instants."
       );
       setStatus("error");

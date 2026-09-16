@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 
 /**
@@ -8,11 +9,16 @@ import Link from "next/link";
  * le rendu sans recharger tout le site.
  */
 export default function ErrorPage({
+  error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    console.error("[error-page]", error);
+  }, [error]);
+
   return (
     <section className="relative flex min-h-svh items-center overflow-hidden bg-espresso text-cream">
       <div

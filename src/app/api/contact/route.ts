@@ -41,6 +41,27 @@ export async function POST(request: Request) {
   });
 }
 
+/** Toute autre méthode reçoit une réponse JSON explicite (jamais une
+ * page d'erreur technique). */
+export async function GET() {
+  return methodNotAllowedResponse();
+}
+
+export async function PUT() {
+  return methodNotAllowedResponse();
+}
+
+export async function DELETE() {
+  return methodNotAllowedResponse();
+}
+
+function methodNotAllowedResponse() {
+  return NextResponse.json(
+    { status: "error", message: "Méthode non autorisée." },
+    { status: 405, headers: { Allow: "POST" } }
+  );
+}
+
 async function readJsonBody(request: Request): Promise<unknown | null> {
   try {
     return await request.json();
