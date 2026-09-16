@@ -81,7 +81,7 @@ export function Hero() {
           <div>
             <motion.p
               variants={copyVariants}
-              className="flex items-center gap-3 text-xs font-semibold tracking-[0.24em] text-champagne uppercase"
+              className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-semibold tracking-[0.24em] text-champagne uppercase"
             >
               <span className="gold-rule" aria-hidden="true" />
               Distributeurs automatiques • Bordeaux &amp; Gironde

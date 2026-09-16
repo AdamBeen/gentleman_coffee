@@ -90,7 +90,7 @@ export function Footer() {
 
       {/* Wordmark géant en contour, débordant du bas (pattern Watermelon footer-15) */}
       <div aria-hidden="true" className="overflow-hidden">
-        <p className="wordmark-outline -mb-[0.24em] text-center font-display text-[clamp(4rem,14.5vw,13rem)] leading-[0.85] font-semibold tracking-[0.02em] whitespace-nowrap select-none">
+        <p className="wordmark-outline -mb-[0.24em] text-center font-display text-[clamp(2.9rem,13.5vw,13rem)] leading-[0.85] font-semibold tracking-[0.02em] whitespace-nowrap select-none">
           GENTELMAN
         </p>
       </div>

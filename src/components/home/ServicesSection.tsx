@@ -26,7 +26,7 @@ export function ServicesSection() {
           <ul className="border-t border-cream/10">
             {services.map((service, i) => (
               <BlurFade key={service.title} delay={0.05 * i}>
-                <li className="grid grid-cols-[7rem_1fr] items-baseline gap-x-8 border-b border-cream/10 py-5">
+                <li className="grid grid-cols-1 items-baseline gap-y-1.5 border-b border-cream/10 py-5 sm:grid-cols-[7rem_1fr] sm:gap-x-8 sm:gap-y-0">
                   <h3 className="font-display text-lg font-medium text-champagne">
                     {service.title}
                   </h3>
