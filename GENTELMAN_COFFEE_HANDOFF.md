@@ -19,7 +19,7 @@ les informations client listées plus bas.
 | Motion | `motion` (révélations au scroll sobres, `prefers-reduced-motion` respecté) |
 | Polices | Cormorant Garamond (titres) + Manrope (texte) via `next/font` |
 | Carte | OpenStreetMap (iframe, sans clé API) |
-| E-mail | Resend (API REST, appelée côté serveur uniquement) |
+| E-mail | Resend **ou** Brevo (API REST, appelée côté serveur uniquement — Brevo : plan gratuit 300 emails/jour) |
 
 Aucune autre dépendance n'a été ajoutée volontairement.
 
@@ -77,10 +77,16 @@ Créer un fichier `.env.local` (jamais committé) à partir des clés ci-dessous
 Elles sont **côté serveur uniquement** — aucune clé n'est exposée au client.
 
 ```bash
-# Clé API Resend — https://resend.com/api-keys
+# Fournisseur e-mail : configurer UN SEUL des deux.
+
+# Option A — Resend (plan gratuit 100 emails/jour) — https://resend.com/api-keys
 RESEND_API_KEY=
 
-# Expéditeur validé dans Resend, ex. "Gentelman Coffee <onboarding@resend.dev>"
+# Option B — Brevo, ex-Sendinblue (plan gratuit 300 emails/jour, société française)
+# https://app.brevo.com/settings/keys/api
+BREVO_API_KEY=
+
+# Expéditeur validé chez le fournisseur, ex. contact@votredomaine.fr
 CONTACT_FROM=
 
 # Destinataire des demandes, ex. contact@gentelmancoffee.fr
@@ -91,11 +97,12 @@ NEXT_PUBLIC_SITE_URL=
 ```
 
 Comportement du formulaire :
-- Si `RESEND_API_KEY` / `CONTACT_FROM` / `CONTACT_TO` sont absentes, la
-  requête est validée puis **journalisée côté serveur** (utile pour la
-  recette) et renvoie `success`.
-- Dès que les 3 variables sont définies sur Vercel, l'envoi réel s'effectue
-  sans modification de code.
+- Si aucune clé fournisseur n'est configurée (ou `CONTACT_FROM` /
+  `CONTACT_TO` absentes), la requête est validée puis **journalisée côté
+  serveur** (utile pour la recette) et renvoie `success`.
+- Resend est prioritaire si les deux clés sont présentes.
+- Dès qu'un fournisseur + `CONTACT_FROM` + `CONTACT_TO` sont définis sur
+  Vercel, l'envoi réel s'effectue sans modification de code.
 
 ## 5. Configuration client — `src/config/site.ts`
 
