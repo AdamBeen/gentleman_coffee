@@ -7,8 +7,20 @@ import { cn } from "@/lib/utils";
  * Liste déroulante entièrement personnalisée (aucune UI native du
  * navigateur) — pattern listbox ARIA : ouverture clavier, navigation
  * flèches / Début / Fin, sélection Entrée ou clic, fermeture Échap /
- * Tab / clic extérieur, annonce de la sélection.
+ * Tab / clic extérieur.
  */
+
+type SelectProps = {
+  name: string;
+  label: string;
+  options: readonly string[];
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  error?: string;
+  required?: boolean;
+};
+
 export function Select({
   name,
   label,
@@ -18,16 +30,7 @@ export function Select({
   placeholder = "Sélectionner",
   error,
   required,
-}: {
-  name: string;
-  label: string;
-  options: readonly string[];
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  error?: string;
-  required?: boolean;
-}) {
+}: SelectProps) {
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
 
@@ -50,42 +53,32 @@ export function Select({
 
   function handleKeyDown(event: React.KeyboardEvent) {
     if (!open) {
-      if (["Enter", " ", "ArrowDown", "ArrowUp"].includes(event.key)) {
+      if (OPEN_KEYS.has(event.key)) {
         event.preventDefault();
-        openList();
+        setActiveIndex(Math.max(0, options.indexOf(value)));
+        setOpen(true);
       }
       return;
     }
-    switch (event.key) {
-      case "ArrowDown":
-        event.preventDefault();
-        setActiveIndex((i) => Math.min(options.length - 1, i + 1));
-        break;
-      case "ArrowUp":
-        event.preventDefault();
-        setActiveIndex((i) => Math.max(0, i - 1));
-        break;
-      case "Home":
-        event.preventDefault();
-        setActiveIndex(0);
-        break;
-      case "End":
-        event.preventDefault();
-        setActiveIndex(options.length - 1);
-        break;
-      case "Enter":
-      case " ":
-        event.preventDefault();
-        if (activeIndex >= 0) commit(activeIndex);
-        break;
-      case "Escape":
-        event.preventDefault();
-        setOpen(false);
-        triggerRef.current?.focus();
-        break;
-      case "Tab":
-        setOpen(false);
-        break;
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      setOpen(false);
+      triggerRef.current?.focus();
+      return;
+    }
+    if (event.key === "Tab") {
+      setOpen(false);
+      return;
+    }
+
+    const next = applyListKey(event.key, activeIndex, options.length);
+    if (next === null) return;
+    event.preventDefault();
+    if (next === SELECT_ACTION) {
+      if (activeIndex >= 0) commit(activeIndex);
+    } else {
+      setActiveIndex(next);
     }
   }
 
@@ -98,14 +91,6 @@ export function Select({
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [open]);
-
-  // Le curseur suit l'option active
-  useEffect(() => {
-    if (!open || activeIndex < 0) return;
-    listRef.current
-      ?.querySelector(`#${CSS.escape(`${listId}-option-${activeIndex}`)}`)
-      ?.scrollIntoView({ block: "nearest" });
-  }, [activeIndex, open, listId]);
 
   return (
     <div ref={rootRef} className="flex flex-col gap-1.5">
@@ -137,75 +122,174 @@ export function Select({
           )}
         >
           <span className="truncate">{value || placeholder}</span>
-          <svg
-            className={cn(
-              "size-4 shrink-0 text-caramel transition-transform duration-200",
-              open && "rotate-180"
-            )}
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M4 6l4 4 4-4" />
-          </svg>
+          <Chevron open={open} />
         </button>
 
         {open ? (
-          <ul
-            ref={listRef}
-            id={listId}
-            role="listbox"
-            aria-labelledby={`${listId}-trigger`}
-            className="absolute inset-x-0 top-[calc(100%+0.4rem)] z-30 max-h-60 overflow-auto rounded-xl border border-roasted/15 bg-soft p-1.5 shadow-[0_18px_40px_-12px_rgba(18,13,10,0.35)]"
-          >
-            {options.map((option, i) => {
-              const selected = option === value;
-              const active = i === activeIndex;
-              return (
-                <li
-                  key={option}
-                  id={`${listId}-option-${i}`}
-                  role="option"
-                  aria-selected={selected}
-                  onMouseEnter={() => setActiveIndex(i)}
-                  onClick={() => commit(i)}
-                  className={cn(
-                    "flex cursor-pointer items-center justify-between gap-2 rounded-lg px-3.5 py-2.5 text-sm transition-colors",
-                    active && "bg-gold/15",
-                    selected ? "font-semibold text-espresso" : "text-espresso/85"
-                  )}
-                >
-                  {option}
-                  {selected ? (
-                    <svg
-                      className="size-3.5 shrink-0 text-caramel"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                    >
-                      <path d="M3 8.5 6.5 12 13 4.5" />
-                    </svg>
-                  ) : null}
-                </li>
-              );
-            })}
-          </ul>
+          <SelectList
+            listId={listId}
+            options={options}
+            value={value}
+            activeIndex={activeIndex}
+            onHover={setActiveIndex}
+            onSelect={commit}
+            listRef={listRef}
+          />
         ) : null}
       </div>
 
-      {error ? (
-        <p role="alert" className="text-xs text-[#b4432f]">
-          {error}
-        </p>
-      ) : null}
+      {error ? <SelectError>{error}</SelectError> : null}
     </div>
+  );
+}
+
+function Chevron({ open }: { open: boolean }) {
+  return (
+    <svg
+      className={cn(
+        "size-4 shrink-0 text-caramel transition-transform duration-200",
+        open && "rotate-180"
+      )}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M4 6l4 4 4-4" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      className="size-3.5 shrink-0 text-caramel"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M3 8.5 6.5 12 13 4.5" />
+    </svg>
+  );
+}
+
+function SelectError({ children }: { children: React.ReactNode }) {
+  return (
+    <p role="alert" className="text-xs text-[#b4432f]">
+      {children}
+    </p>
+  );
+}
+
+/* --- Logique clavier pure (testable isolément) --- */
+
+const OPEN_KEYS = new Set(["Enter", " ", "ArrowDown", "ArrowUp"]);
+
+/** Action spéciale : valider l'option active. */
+const SELECT_ACTION = "commit";
+
+/** Traduit une touche en nouvel index, en action de sélection, ou rien. */
+function applyListKey(
+  key: string,
+  current: number,
+  count: number
+): number | "commit" | null {
+  switch (key) {
+    case "ArrowDown":
+      return Math.min(count - 1, current + 1);
+    case "ArrowUp":
+      return Math.max(0, current - 1);
+    case "Home":
+      return 0;
+    case "End":
+      return count - 1;
+    case "Enter":
+    case " ":
+      return SELECT_ACTION;
+    default:
+      return null;
+  }
+}
+
+
+/** Boîte d'options positionnée sous le déclencheur. */
+function SelectList({
+  listId,
+  options,
+  value,
+  activeIndex,
+  onHover,
+  onSelect,
+  listRef,
+}: {
+  listId: string;
+  options: readonly string[];
+  value: string;
+  activeIndex: number;
+  onHover: (index: number) => void;
+  onSelect: (index: number) => void;
+  listRef: React.RefObject<HTMLUListElement | null>;
+}) {
+  return (
+    <ul
+      ref={listRef}
+      id={listId}
+      role="listbox"
+      aria-labelledby={`${listId}-trigger`}
+      className="absolute inset-x-0 top-[calc(100%+0.4rem)] z-30 max-h-60 overflow-auto rounded-xl border border-roasted/15 bg-soft p-1.5 shadow-[0_18px_40px_-12px_rgba(18,13,10,0.35)]"
+    >
+      {options.map((option, i) => (
+        <SelectOption
+          key={option}
+          id={`${listId}-option-${i}`}
+          option={option}
+          selected={option === value}
+          active={i === activeIndex}
+          onHover={() => onHover(i)}
+          onSelect={() => onSelect(i)}
+        />
+      ))}
+    </ul>
+  );
+}
+
+function SelectOption({
+  id,
+  option,
+  active,
+  selected,
+  onHover,
+  onSelect,
+}: {
+  id: string;
+  option: string;
+  active: boolean;
+  selected: boolean;
+  onHover: () => void;
+  onSelect: () => void;
+}) {
+  return (
+    <li
+      id={id}
+      role="option"
+      aria-selected={selected}
+      onMouseEnter={onHover}
+      onClick={onSelect}
+      className={cn(
+        "flex cursor-pointer items-center justify-between gap-2 rounded-lg px-3.5 py-2.5 text-sm transition-colors",
+        active && "bg-gold/15",
+        selected ? "font-semibold text-espresso" : "text-espresso/85"
+      )}
+    >
+      {option}
+      {selected ? <CheckIcon /> : null}
+    </li>
   );
 }

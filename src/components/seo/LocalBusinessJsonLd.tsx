@@ -50,10 +50,15 @@ export function LocalBusinessJsonLd() {
     }));
   }
 
+  // JSON.stringify + échappement des chevrons : la sortie ne peut pas
+  // fermer la balise <script> ni injecter de HTML. Entrée 100 % statique
+  // (src/config/site.ts), aucune donnée utilisateur.
+  const json = JSON.stringify(data).replace(/</g, "\\u003c");
+
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: json }}
     />
   );
 }
