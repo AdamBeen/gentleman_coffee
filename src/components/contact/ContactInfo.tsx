@@ -78,13 +78,6 @@ export function ContactInfo() {
           </div>
         ))}
       </dl>
-      <p className="text-xs leading-relaxed text-cream/45">
-        Ces informations sont gérées dans le fichier{" "}
-        <code className="rounded bg-cream/10 px-1.5 py-0.5 text-xs">
-          src/config/site.ts
-        </code>
-        .
-      </p>
     </div>
   );
 }
