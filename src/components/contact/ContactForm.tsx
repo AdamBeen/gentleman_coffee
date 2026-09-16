@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { establishmentTypes, solutionTypes } from "@/config/site";
 import { validateContactForm, type FieldErrors } from "@/lib/validation";
+import { Select } from "@/components/ui/select";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -15,6 +16,8 @@ export function ContactForm() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [serverMessage, setServerMessage] = useState("");
   const [messageLength, setMessageLength] = useState(0);
+  const [establishmentType, setEstablishmentType] = useState("");
+  const [solutionType, setSolutionType] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -27,9 +30,9 @@ export function ContactForm() {
       phone: String(formData.get("phone") ?? ""),
       email: String(formData.get("email") ?? ""),
       city: String(formData.get("city") ?? ""),
-      establishmentType: String(formData.get("establishmentType") ?? ""),
+      establishmentType,
       users: String(formData.get("users") ?? ""),
-      solutionType: String(formData.get("solutionType") ?? ""),
+      solutionType,
       message: String(formData.get("message") ?? ""),
       consent: formData.get("consent") === "on",
     };
@@ -64,6 +67,8 @@ export function ContactForm() {
         setServerMessage(json.message ?? "");
         form.reset();
         setMessageLength(0);
+        setEstablishmentType("");
+        setSolutionType("");
       } else {
         if (json.errors) setErrors(json.errors);
         setServerMessage(
@@ -192,27 +197,16 @@ export function ContactForm() {
           />
         </Field>
 
-        <Field
-          label="Type d'établissement"
+        <Select
           name="establishmentType"
+          label="Type d'établissement"
+          options={establishmentTypes}
+          value={establishmentType}
+          onChange={setEstablishmentType}
+          placeholder="Sélectionner…"
           error={errors.establishmentType}
-        >
-          <select
-            id="establishmentType"
-            name="establishmentType"
-            defaultValue=""
-            className={fieldClass(Boolean(errors.establishmentType))}
-          >
-            <option value="" disabled>
-              Sélectionner…
-            </option>
-            {establishmentTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </Field>
+          required
+        />
 
         <Field
           label="Nombre approximatif d'utilisateurs"
@@ -232,25 +226,16 @@ export function ContactForm() {
           />
         </Field>
 
-        <Field label="Type de solution" name="solutionType" required error={errors.solutionType}>
-          <select
-            id="solutionType"
-            name="solutionType"
-            required
-            defaultValue=""
-            className={fieldClass(Boolean(errors.solutionType))}
-            aria-invalid={Boolean(errors.solutionType)}
-          >
-            <option value="" disabled>
-              Sélectionner…
-            </option>
-            {solutionTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </Field>
+        <Select
+          name="solutionType"
+          label="Type de solution"
+          options={solutionTypes}
+          value={solutionType}
+          onChange={setSolutionType}
+          placeholder="Sélectionner…"
+          error={errors.solutionType}
+          required
+        />
       </div>
 
       <Field
