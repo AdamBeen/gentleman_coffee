@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" role="img" aria-label="">
+  <!-- Fond organique type "Blob Scene" (template Haikei) adapté à la palette Gentelman Coffee -->
+  <defs>
+    <linearGradient id="hk-a" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3A2418"/>
+      <stop offset="100%" stop-color="#21150F"/>
+    </linearGradient>
+    <linearGradient id="hk-b" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8C5A32"/>
+      <stop offset="100%" stop-color="#3A2418"/>
+    </linearGradient>
+    <radialGradient id="hk-glow" cx="50%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#8C5A32" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#120D0A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1440" height="900" fill="#120D0A"/>
+  <rect width="1440" height="900" fill="url(#hk-glow)"/>
+
+  <!-- Blobs organiques (structure du template Haikei "Blob Scene") -->
+  <path fill="url(#hk-blob-a)" opacity="0.9" d="M660,-62C742,-14,760,102,700,180C640,258,520,300,400,296C280,292,160,238,100,150C40,62,40,-62,100,-140C160,-218,280,-250,400,-226C520,-202,578,-110,660,-62Z" transform="translate(120 120) scale(0.42)"/>
+  <path fill="url(#hk-b)" opacity="0.9" d="M660,-62C742,-14,760,102,700,180C640,258,520,300,400,296C280,292,160,238,100,150C40,62,40,-62,100,-140C160,-218,280,-250,400,-246C520,-242,578,-110,660,-62Z" transform="translate(1180 160) scale(0.9)"/>
+  <path fill="url(#hk-b)" opacity="0.9" d="M560,-52C632,32,640,168,560,248C480,328,320,352,200,296C280,240,320,128,280,32C240,-64,160,-160,240,-224C320,-288,488,-136,560,-52Z" transform="translate(240 660)"/>
+  <path fill="#C6A15B" fill-opacity="0.14" d="M320,-24C392,48,408,168,344,240C380,312,240,352,144,320C48,264,-32,192,-64,160C-96,168,-96,48,-64,-24C-32,-96,32,-160,240,-160C341,-160,248,-96,320,-24Z" transform="translate(140 760)"/>
+
+  <!-- Liseré doré + vague inférieure -->
+  <path fill="none" stroke="#C6A15B" stroke-opacity="0.4" stroke-width="1.5" d="M0,470 C260,380 480,560 760,520 C1020,484 1180,340 1440,420"/>
+  <path fill="url(#hk-b)" d="M0,620 C300,540 560,700 860,650 C1120,606 1280,560 1440,600 L1440,900 L0,900 Z"/>
+</svg>

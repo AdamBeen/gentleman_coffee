@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 600" preserveAspectRatio="none" role="img" aria-label="">
+  <!-- Séparateur organique type "Waves" (template Haikei) adapté à la palette Gentelman Coffee -->
+  <defs>
+    <linearGradient id="hk-w1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#21150F"/>
+      <stop offset="100%" stop-color="#3A2418"/>
+    </linearGradient>
+    <linearGradient id="hk-w2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3A2418"/>
+      <stop offset="100%" stop-color="#120D0A"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#hk-w1)" fill-opacity="0.55" d="M0,160 C240,240 480,80 720,140 C960,140 1200,240 1440,160 L1440,320 C1200,260 960,300 720,320 C480,340 240,300 0,340 Z"/>
+  <path fill="url(#hk-w2)" d="M0,220 C260,180 480,340 760,300 C1020,264 1220,180 1440,240 L1440,600 L0,600 Z"/>
+  <path fill="none" stroke="#C6A15B" stroke-opacity="0.35" stroke-width="1.5" d="M0,220 C260,180 480,320 760,290 C1020,264 1220,200 1440,260"/>
+</svg>

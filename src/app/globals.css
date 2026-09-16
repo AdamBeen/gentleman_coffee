@@ -1,26 +1,134 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   GENTELMAN COFFEE — DESIGN TOKENS
+   Palette maison de café premium : espresso, bois sombre,
+   caramel, laiton, champagne, crème.
+   ============================================================ */
+@theme {
+  --color-espresso: #120d0a;
+  --color-coffee: #21150f;
+  --color-roasted: #3a2418;
+  --color-caramel: #8c5a32;
+  --color-gold: #c6a15b;
+  --color-champagne: #e0c995;
+  --color-cream: #f3e9d7;
+  --color-soft: #faf7f2;
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+
+  --tracking-eyebrow: 0.22em;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================================
+   BASE
+   ============================================================ */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-soft);
+  color: var(--color-espresso);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-gold);
+  color: var(--color-espresso);
+}
+
+/* Focus visible accessible, doré, sur toute l'interface */
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   UTILITAIRES
+   ============================================================ */
+@utility container-site {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 76rem;
+  padding-inline: 1.25rem;
+
+  @media (min-width: 768px) {
+    padding-inline: 2rem;
+  }
+}
+
+/* Filet doré fin, signature visuelle du site */
+@utility gold-rule {
+  display: inline-block;
+  width: 3rem;
+  height: 1px;
+  background: linear-gradient(to right, var(--color-gold), transparent);
+}
+
+/* Grain papier très subtil (SVG feTurbulence en data-URI) */
+@utility paper-grain {
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  mix-blend-mode: overlay;
+}
+
+/* Wordmark géant contour (footer) */
+@utility wordmark-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--color-champagne) 30%, transparent);
+}
+
+/* ============================================================
+   FORMULAIRES
+   ============================================================ */
+.field {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--color-roasted) 20%, transparent);
+  background-color: var(--color-soft);
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  color: var(--color-espresso);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.field::placeholder {
+  color: color-mix(in srgb, var(--color-roasted) 45%, transparent);
+}
+
+.field:hover {
+  border-color: color-mix(in srgb, var(--color-caramel) 45%, transparent);
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 22%, transparent);
+}
+
+.field-error {
+  border-color: #b4432f;
+}
+
+/* ============================================================
+   ACCESSIBILITÉ — prefers-reduced-motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
