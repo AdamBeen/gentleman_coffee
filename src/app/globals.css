@@ -85,6 +85,31 @@ body {
 }
 
 /* ============================================================
+   BANDE DÉFILANTE — CSS pur, vitesse constante
+   ============================================================ */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee-scroll var(--marquee-duration, 45s) linear infinite;
+}
+
+.marquee-track[data-reverse] {
+  animation-direction: reverse;
+}
+
+/* Pause au survol */
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ============================================================
    FORMULAIRES
    ============================================================ */
 .field {

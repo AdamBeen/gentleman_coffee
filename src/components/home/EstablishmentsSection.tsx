@@ -29,7 +29,7 @@ export function EstablishmentsSection() {
 
       {/* Bandeau défilant décoratif */}
       <div className="mt-14 border-y border-gold/20 py-5" aria-hidden="true">
-        <Marquee baseVelocity={18}>
+        <Marquee duration={45}>
           {establishments.map((establishment) => (
             <span
               key={establishment.name}
