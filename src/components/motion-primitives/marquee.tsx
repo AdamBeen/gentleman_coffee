@@ -24,7 +24,7 @@ export function Marquee({
   className,
   reverse = false,
   pauseOnHover = true,
-  baseVelocity = 3,
+  baseVelocity = 1.2,
 }: {
   children: React.ReactNode;
   className?: string;
@@ -39,7 +39,7 @@ export function Marquee({
     damping: 50,
     stiffness: 400,
   });
-  const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 1.2], {
+  const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 0.5], {
     clamp: false,
   });
 
